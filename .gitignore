@@ -1,0 +1,43 @@
+# ---------------------------------------------------------------------------
+# SECRETS -- never commit
+# ---------------------------------------------------------------------------
+# The ChaCha20-Poly1305 root key. Every deployment must generate its own;
+# see config/chacha20_key.hex.example and the README.
+config/chacha20_key.hex
+*.key
+*.pem
+
+# ---------------------------------------------------------------------------
+# Build output (colcon)
+# ---------------------------------------------------------------------------
+build/
+install/
+log/
+*.egg-info/
+__pycache__/
+*.py[cod]
+
+# ---------------------------------------------------------------------------
+# Bulk run data -- regenerable, and large enough to dominate a clone
+# ---------------------------------------------------------------------------
+# Raw per-flight telemetry (~58 MB across 40+ flights). Regenerate by flying:
+#   ./scripts/phase9_sim_up.sh && python3 scripts/test_flight.py
+data/logs/
+
+# ML training set (~27 MB). Regenerate with scripts/generate_attack_data.py.
+data/training_data.csv
+
+# Transient scenario logs written by run_attack_scenario.sh
+data/attack_logs/.*.log
+
+# Kept deliberately: data/phase9/ (the Phase 9 results), data/attack_logs/
+# attack_report_*.json (per-run detection reports), models/ (the trained
+# IsolationForest, needed to reproduce the published numbers).
+
+# ---------------------------------------------------------------------------
+# Editor / OS noise
+# ---------------------------------------------------------------------------
+.vscode/
+.idea/
+*.swp
+.DS_Store

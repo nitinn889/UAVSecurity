@@ -1,0 +1,349 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>UAV Security Dashboard</title>
+<style>
+  :root {
+    --bg: #0d1117; --panel: #161b22; --border: #30363d;
+    --text: #c9d1d9; --muted: #8b949e;
+    --ok: #3fb950; --warn: #d29922; --bad: #f85149;
+    --perceived: #d29922; --true: #58a6ff;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 13px/1.5 ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  }
+  header {
+    display: flex; align-items: center; gap: 20px; flex-wrap: wrap;
+    padding: 12px 18px; background: var(--panel);
+    border-bottom: 1px solid var(--border);
+  }
+  h1 { font-size: 14px; margin: 0; letter-spacing: .08em; text-transform: uppercase; }
+  #badge {
+    font-size: 20px; font-weight: 700; letter-spacing: .06em;
+    padding: 4px 16px; border-radius: 4px; border: 2px solid currentColor;
+  }
+  .metric { display: flex; flex-direction: column; }
+  .metric .label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; }
+  .metric .value { font-size: 18px; font-weight: 600; font-variant-numeric: tabular-nums; }
+  #conn { margin-left: auto; font-size: 11px; color: var(--muted); }
+  #conn.live { color: var(--ok); }
+  #conn.dead { color: var(--bad); }
+
+  main {
+    display: grid; gap: 12px; padding: 12px;
+    grid-template-columns: minmax(360px, 1.2fr) minmax(320px, 1fr);
+  }
+  @media (max-width: 900px) { main { grid-template-columns: 1fr; } }
+
+  section {
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 6px; padding: 12px; min-width: 0;
+  }
+  section > h2 {
+    font-size: 11px; margin: 0 0 10px; color: var(--muted);
+    text-transform: uppercase; letter-spacing: .1em; font-weight: 600;
+  }
+  /* Canvas height must come from CSS, not the height attribute: fitCanvas
+     overwrites the attribute with the measured size each frame, so an
+     attribute-only height collapses to 0 on the first measurement and can
+     never recover. */
+  canvas { width: 100%; display: block; background: #010409; border-radius: 4px; }
+  #traj { height: 340px; }
+
+  .legend { display: flex; gap: 16px; margin-top: 8px; font-size: 11px; color: var(--muted); }
+  .legend i { display: inline-block; width: 18px; height: 3px; vertical-align: middle; margin-right: 5px; }
+
+  .score-row { display: grid; grid-template-columns: 52px 1fr 92px 46px; gap: 8px; align-items: center; margin-bottom: 7px; }
+  .score-row .name { font-size: 11px; color: var(--muted); }
+  .bar { height: 12px; background: #010409; border-radius: 2px; overflow: hidden; }
+  .bar > div { height: 100%; transition: width .12s linear, background .12s linear; }
+  .score-row .num { text-align: right; font-variant-numeric: tabular-nums; font-size: 12px; }
+  .spark { height: 22px; }
+
+  ul { list-style: none; margin: 0; padding: 0; }
+  #flags li, #actions li { padding: 5px 8px; border-radius: 3px; margin-bottom: 5px; font-size: 11.5px; }
+  #flags li { background: rgba(210,153,34,.1); border-left: 3px solid var(--warn); }
+  #flags li.severe { background: rgba(248,81,73,.1); border-left-color: var(--bad); }
+  #actions li { background: rgba(248,81,73,.12); border-left: 3px solid var(--bad); font-weight: 600; }
+  .empty { color: var(--muted); font-size: 11.5px; font-style: italic; }
+
+  #log { max-height: 320px; overflow-y: auto; }
+  #log li { display: grid; grid-template-columns: 54px 78px 1fr; gap: 8px;
+            padding: 3px 0; border-bottom: 1px solid rgba(48,54,61,.5); font-size: 11px; }
+  #log .t { color: var(--muted); font-variant-numeric: tabular-nums; }
+  #log .kind { font-weight: 600; font-size: 10px; letter-spacing: .04em; }
+  .sev-severe .kind, .sev-severe .msg { color: var(--bad); }
+  .sev-moderate .kind { color: var(--warn); }
+  .sev-minor .kind { color: var(--warn); opacity: .85; }
+  .sev-info .kind { color: var(--muted); }
+
+  dl { display: grid; grid-template-columns: auto 1fr; gap: 3px 14px; margin: 0; font-size: 11.5px; }
+  dt { color: var(--muted); }
+  dd { margin: 0; font-variant-numeric: tabular-nums; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>UAV Security</h1>
+  <div id="badge">—</div>
+  <div class="metric"><span class="label">Overall trust</span><span class="value" id="overall">—</span></div>
+  <div class="metric"><span class="label">Response level</span><span class="value" id="level">—</span></div>
+  <div class="metric"><span class="label">Incident</span><span class="value" id="incident">—</span></div>
+  <div class="metric"><span class="label">Elapsed</span><span class="value" id="elapsed">—</span></div>
+  <div id="conn">connecting…</div>
+</header>
+
+<main>
+  <section>
+    <h2>Trajectory — top-down (North / East)</h2>
+    <canvas id="traj" height="340"></canvas>
+    <div class="legend">
+      <span><i style="background:var(--perceived)"></i>Perceived (security stack)</span>
+      <span><i style="background:var(--true)"></i>True (EKF)</span>
+      <span id="divergence"></span>
+    </div>
+  </section>
+
+  <section>
+    <h2>Component trust</h2>
+    <div id="scores"></div>
+    <h2 style="margin-top:14px">Vehicle</h2>
+    <dl id="vehicle"></dl>
+  </section>
+
+  <section>
+    <h2>Active flags</h2>
+    <ul id="flags"></ul>
+    <h2 style="margin-top:14px">Active response actions</h2>
+    <ul id="actions"></ul>
+    <h2 style="margin-top:14px">ML anomaly detector</h2>
+    <dl id="ml"></dl>
+  </section>
+
+  <section>
+    <h2>Event log</h2>
+    <ul id="log"></ul>
+  </section>
+</main>
+
+<script>
+const COMPONENTS = ['gps', 'imu', 'barometer', 'attitude', 'commands'];
+const LABELS = { gps: 'GPS', imu: 'IMU', barometer: 'BARO', attitude: 'ATT', commands: 'CMD' };
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+
+function scoreColor(v) {
+  if (v === null || v === undefined) return css('--muted');
+  if (v > 0.7) return css('--ok');
+  if (v >= 0.4) return css('--warn');
+  return css('--bad');
+}
+
+// The supervisor computes TRUSTED/DEGRADED/UNTRUSTED from trust_config.yaml
+// thresholds, so parse its label rather than duplicating those numbers here.
+function statusFromLine(line) {
+  const m = line && line.match(/^\[(\w+)\]/);
+  return m ? m[1] : null;
+}
+
+function fitCanvas(cv) {
+  const dpr = window.devicePixelRatio || 1;
+  const w = cv.clientWidth, h = cv.clientHeight;
+  if (!w || !h) return null;   // not laid out yet; drawing would zero the canvas
+  if (cv.width !== w * dpr || cv.height !== h * dpr) {
+    cv.width = w * dpr; cv.height = h * dpr;
+  }
+  const ctx = cv.getContext('2d');
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  return { ctx, w, h };
+}
+
+function drawTrajectory(state) {
+  const fit = fitCanvas(document.getElementById('traj'));
+  if (!fit) return;
+  const { ctx, w, h } = fit;
+  ctx.clearRect(0, 0, w, h);
+
+  const perceived = state.trajectory.filter(p => p[1] !== null && p[2] !== null);
+  const truth = state.true_trajectory.filter(p => p[1] !== null && p[2] !== null);
+  const all = perceived.concat(truth);
+
+  if (!all.length) {
+    ctx.fillStyle = css('--muted'); ctx.font = '12px monospace'; ctx.textAlign = 'center';
+    ctx.fillText('waiting for position data…', w / 2, h / 2);
+    return;
+  }
+
+  // PX4 local frame is NED: x=north, y=east. Plot east on screen-x,
+  // north on screen-y (inverted) so the view reads like a map.
+  const xs = all.map(p => p[2]), ys = all.map(p => p[1]);
+  let minX = Math.min(...xs), maxX = Math.max(...xs);
+  let minY = Math.min(...ys), maxY = Math.max(...ys);
+  const span = Math.max(maxX - minX, maxY - minY, 10);
+  const cx = (minX + maxX) / 2, cy = (minY + maxY) / 2;
+  const pad = 26, scale = (Math.min(w, h) - 2 * pad) / (span * 1.15);
+  const px = v => w / 2 + (v - cx) * scale;
+  const py = v => h / 2 - (v - cy) * scale;
+
+  ctx.strokeStyle = 'rgba(48,54,61,.6)'; ctx.lineWidth = 1;
+  for (let i = 0; i <= 4; i++) {
+    const gx = (w / 4) * i, gy = (h / 4) * i;
+    ctx.beginPath(); ctx.moveTo(gx, 0); ctx.lineTo(gx, h); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(0, gy); ctx.lineTo(w, gy); ctx.stroke();
+  }
+
+  const path = (pts, color, width) => {
+    if (!pts.length) return;
+    ctx.strokeStyle = color; ctx.lineWidth = width;
+    ctx.lineJoin = 'round'; ctx.lineCap = 'round';
+    ctx.beginPath();
+    pts.forEach((p, i) => i ? ctx.lineTo(px(p[2]), py(p[1])) : ctx.moveTo(px(p[2]), py(p[1])));
+    ctx.stroke();
+    const last = pts[pts.length - 1];
+    ctx.fillStyle = color;
+    ctx.beginPath(); ctx.arc(px(last[2]), py(last[1]), 4, 0, Math.PI * 2); ctx.fill();
+  };
+
+  path(truth, css('--true'), 1.8);
+  path(perceived, css('--perceived'), 2.2);
+
+  ctx.fillStyle = css('--muted'); ctx.font = '10px monospace'; ctx.textAlign = 'left';
+  ctx.fillText(`scale ${(span * 1.15).toFixed(0)} m`, 8, h - 8);
+  ctx.textAlign = 'center'; ctx.fillText('N', w / 2, 12);
+
+  // Live divergence between the two tracks is the clearest single number
+  // for "is the position being spoofed right now".
+  const el = document.getElementById('divergence');
+  if (perceived.length && truth.length) {
+    const a = perceived[perceived.length - 1], b = truth[truth.length - 1];
+    const d = Math.hypot(a[1] - b[1], a[2] - b[2]);
+    el.textContent = `divergence ${d.toFixed(1)} m`;
+    el.style.color = d > 5 ? css('--bad') : css('--muted');
+  } else {
+    el.textContent = '';
+  }
+}
+
+function drawSpark(cv, history) {
+  const fit = fitCanvas(cv);
+  if (!fit) return;
+  const { ctx, w, h } = fit;
+  ctx.clearRect(0, 0, w, h);
+  if (!history || history.length < 2) return;
+
+  const t0 = history[0][0], t1 = history[history.length - 1][0];
+  const span = Math.max(t1 - t0, 1e-6);
+  const px = t => ((t - t0) / span) * w;
+  const py = v => h - v * h;
+
+  ctx.strokeStyle = 'rgba(48,54,61,.8)'; ctx.lineWidth = 1;
+  [0.4, 0.7].forEach(v => {
+    ctx.beginPath(); ctx.moveTo(0, py(v)); ctx.lineTo(w, py(v)); ctx.stroke();
+  });
+
+  ctx.strokeStyle = scoreColor(history[history.length - 1][1]);
+  ctx.lineWidth = 1.6; ctx.beginPath();
+  history.forEach((p, i) => i ? ctx.lineTo(px(p[0]), py(p[1])) : ctx.moveTo(px(p[0]), py(p[1])));
+  ctx.stroke();
+}
+
+function renderScores(state) {
+  const host = document.getElementById('scores');
+  if (!host.children.length) {
+    host.innerHTML = COMPONENTS.map(c => `
+      <div class="score-row">
+        <span class="name">${LABELS[c]}</span>
+        <div class="bar"><div id="bar-${c}"></div></div>
+        <canvas class="spark" id="spark-${c}" height="22"></canvas>
+        <span class="num" id="num-${c}">—</span>
+      </div>`).join('');
+  }
+  COMPONENTS.forEach(c => {
+    const v = state.trust_scores[c];
+    const bar = document.getElementById(`bar-${c}`);
+    bar.style.width = ((v ?? 0) * 100).toFixed(1) + '%';
+    bar.style.background = scoreColor(v);
+    document.getElementById(`num-${c}`).textContent = v === undefined ? '—' : v.toFixed(2);
+    drawSpark(document.getElementById(`spark-${c}`), state.score_history[c]);
+  });
+}
+
+function renderLists(state) {
+  const flags = document.getElementById('flags');
+  flags.innerHTML = state.active_flags.length
+    ? state.active_flags.map(f =>
+        `<li class="${f.severity}"><b>${(f.component || '?').toUpperCase()}</b> ${f.check_type || ''} ` +
+        `<span style="color:var(--muted)">(${f.severity})</span><br>${f.reason || ''}</li>`).join('')
+    : '<li class="empty">none</li>';
+
+  const actions = document.getElementById('actions');
+  actions.innerHTML = state.active_actions.length
+    ? state.active_actions.map(a => `<li>${a}</li>`).join('')
+    : '<li class="empty">none</li>';
+
+  const ml = state.ml_anomaly;
+  document.getElementById('ml').innerHTML = ml
+    ? `<dt>Anomaly</dt><dd style="color:${ml.is_anomaly ? css('--bad') : css('--ok')}">${ml.is_anomaly ? 'YES' : 'no'}</dd>
+       <dt>Confidence</dt><dd>${(ml.confidence ?? 0).toFixed(3)}</dd>
+       <dt>Score</dt><dd>${(ml.anomaly_score ?? 0).toFixed(4)}</dd>
+       <dt>Top features</dt><dd>${(ml.top_features || []).join(', ') || '—'}</dd>`
+    : '<dt>status</dt><dd class="empty">no data</dd>';
+
+  const v = state.vehicle || {};
+  const alt = state.trajectory.length ? -(state.trajectory[state.trajectory.length - 1][3] ?? 0) : null;
+  document.getElementById('vehicle').innerHTML = `
+    <dt>Armed</dt><dd>${v.arming_state === 2 ? 'ARMED' : 'disarmed'}</dd>
+    <dt>Nav state</dt><dd>${v.nav_state ?? '—'}</dd>
+    <dt>Altitude</dt><dd>${alt === null ? '—' : alt.toFixed(1) + ' m'}</dd>
+    <dt>Lat / Lon</dt><dd>${v.lat != null ? v.lat.toFixed(6) + ', ' + v.lon.toFixed(6) : '—'}</dd>
+    <dt>GPS fix</dt><dd>${v.fix_type ?? '—'} (${v.satellites_used ?? '—'} sats)</dd>
+    <dt>Battery</dt><dd>${v.battery_remaining != null ? (v.battery_remaining * 100).toFixed(0) + '%' : '—'}</dd>`;
+}
+
+function renderLog(state) {
+  document.getElementById('log').innerHTML = state.events.map(e =>
+    `<li class="sev-${e.severity}"><span class="t">${e.t.toFixed(1)}s</span>` +
+    `<span class="kind">${e.kind.toUpperCase()}</span><span class="msg">${e.text}</span></li>`).join('')
+    || '<li class="empty">no events yet</li>';
+}
+
+function render(state) {
+  const label = statusFromLine(state.status_line);
+  const badge = document.getElementById('badge');
+  badge.textContent = label || '—';
+  badge.style.color = label === 'TRUSTED' ? css('--ok')
+    : label === 'DEGRADED' ? css('--warn')
+    : label === 'UNTRUSTED' ? css('--bad') : css('--muted');
+
+  const o = state.overall_trust;
+  const overall = document.getElementById('overall');
+  overall.textContent = o === null || o === undefined ? '—' : o.toFixed(3);
+  overall.style.color = scoreColor(o);
+
+  document.getElementById('level').textContent = state.response_level ?? '—';
+  const inc = document.getElementById('incident');
+  inc.textContent = state.incident_active ? 'ACTIVE' : 'clear';
+  inc.style.color = state.incident_active ? css('--bad') : css('--ok');
+  document.getElementById('elapsed').textContent = state.t.toFixed(0) + 's';
+
+  drawTrajectory(state);
+  renderScores(state);
+  renderLists(state);
+  renderLog(state);
+}
+
+const conn = document.getElementById('conn');
+const source = new EventSource('/api/stream');
+source.onmessage = e => {
+  conn.textContent = '● live'; conn.className = 'live';
+  render(JSON.parse(e.data));
+};
+source.onerror = () => { conn.textContent = '● disconnected'; conn.className = 'dead'; };
+window.addEventListener('resize', () => fetch('/api/state').then(r => r.json()).then(render));
+</script>
+</body>
+</html>

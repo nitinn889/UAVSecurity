@@ -1,0 +1,19 @@
+# Micro XRCE-DDS Agent / PX4 bridge parameters
+dds_agent:
+  transport: udp4
+  port: 8888
+  namespace: ""
+  ros_domain_id: 42
+
+fmu_topics:
+  out:
+    - /fmu/out/vehicle_local_position
+    - /fmu/out/vehicle_global_position
+    - /fmu/out/sensor_combined
+    - /fmu/out/vehicle_gps_position
+    - /fmu/out/vehicle_attitude
+    - /fmu/out/battery_status
+  in:
+    - /fmu/in/vehicle_command
+    - /fmu/in/trajectory_setpoint
+    - /fmu/in/offboard_control_mode

@@ -1,0 +1,35 @@
+{
+  "attack_type": "gps_spoof",
+  "attack_start_us": 1790780061549497,
+  "attack_end_us": 1790780076549432,
+  "attack_duration_s": 15.0,
+  "first_detection_us": 1790780063040741,
+  "detection_latency_s": 1.491244,
+  "total_flags_during_attack": 1,
+  "flags_by_type": {
+    "physics": 1,
+    "cross_sensor": 0,
+    "temporal": 0
+  },
+  "ml_anomaly_detections": 0,
+  "score_minimums": {
+    "gps": 0.95,
+    "imu": 1.0,
+    "barometer": 1.0,
+    "attitude": 1.0,
+    "commands": 1.0
+  },
+  "post_attack_recovery_time_s": 0.090993,
+  "false_positives_pre_attack": 0,
+  "response_actions_fired": [
+    "COMMAND_RTH",
+    "ENTER_DEGRADED_MODE",
+    "FLAG_ONLY",
+    "REDUCE_GPS_WEIGHT"
+  ],
+  "first_response_action_latency_s": 0.091497,
+  "highest_response_level_reached": 4,
+  "hover_commanded": false,
+  "rth_commanded": true,
+  "land_commanded": false
+}

@@ -1,0 +1,35 @@
+{
+  "n_train": 37386,
+  "n_test": 9347,
+  "n_attacked_windows": 96,
+  "fp_rate": 0.09660853749866267,
+  "detection_rate": 0.15625,
+  "contamination": 0.1,
+  "n_estimators": 200,
+  "window_size": 30,
+  "targets_met": false,
+  "per_attack_type": {
+    "sensor_noise_amplification": {
+      "n_windows": 10,
+      "detection_rate": 1.0
+    },
+    "gps_position_spoof": {
+      "n_windows": 50,
+      "detection_rate": 0.0
+    },
+    "gps_velocity_spoof": {
+      "n_windows": 5,
+      "detection_rate": 1.0
+    },
+    "command_injection": {
+      "n_windows": 6,
+      "detection_rate": 0.0
+    },
+    "gps_frozen": {
+      "n_windows": 25,
+      "detection_rate": 0.0
+    }
+  },
+  "notes": "targets_met=false at this contamination. command_injection has 0% ceiling by design: none of the 23 spec'd features reference command data, so it's structurally invisible to this model and is intentionally left to trust_engine's whitelist check (Phase 3) instead -- see Task 5's fusion design. gps_position_spoof and gps_frozen also detect near 0%: their induced feature values (gps_lat_std/gps_lon_delta etc.) land within the natural tail of this SITL dataset's own low-activity (mostly-hover) clean windows -- e.g. clean gps_lon_delta reaches 3.8e-5 at its 99.9th percentile, the same order of magnitude as the injected spoof/freeze signatures, given the scaler's own std for that feature is ~1.5e-6. Contamination up to 0.40 was probed; detection_rate only reaches ~68% at contamination=0.20, where fp_rate is ~20% (see console output above) -- the two targets trade off directly and aren't jointly satisfiable with this feature set + this training data, not just a matter of picking a better contamination value. sensor_noise_amplification and gps_velocity_spoof (abrupt, large, discrete signal changes with no natural-data overlap) are detected at 100% regardless.",
+  "timestamp": "2026-09-13T15:14:48.443616+00:00"
+}

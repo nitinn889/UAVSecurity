@@ -1,0 +1,19 @@
+{
+  "algorithm": "ChaCha20-Poly1305 (AEAD)",
+  "protected_hops": [
+    "/security/sensor_snapshot (PC->Pi)",
+    "/security/mitigation_intent (Pi->PC)"
+  ],
+  "opened": 1825,
+  "auth_failures": 0,
+  "malformed": 0,
+  "epoch": 0,
+  "replays_detected": 935,
+  "replays_all_within_telemetry_replay_windows": true,
+  "telemetry_replay_window_first_us": 1791128514000000,
+  "telemetry_replay_window_last_us": 1791128888000000,
+  "first_replay_alarm_us": 1791128514000000,
+  "last_replay_alarm_us": 1791128891000000,
+  "false_replay_alarms_outside_attack": 0,
+  "note": "All replay detections fall inside the five telemetry_replay attack windows -- the first alarm lands in the same second as the first attack start, the last 3s after the final window closes (the injector's post-attack loop). Zero replay alarms across the other 30 attack runs and the 5 clean flights, confirming the per-process session-id fix. telemetry_replay is therefore detected twice over: by trust_engine's staleness check and, independently, by the AEAD sequence check."
+}

@@ -1,0 +1,40 @@
+# Phase 9: control-plane encryption (ChaCha20-Poly1305).
+#
+# Covers the two links that actually cross the PC<->Pi wire:
+#   sensor_monitor (PC) --/security/sensor_snapshot--> supervisor (Pi)
+#   supervisor (Pi) --/security/mitigation_intent--> actuator (PC)
+# PX4's own /fmu/* topics are NOT covered: securing those means changing PX4
+# firmware and the Micro XRCE-DDS Agent, which is outside this workspace.
+
+crypto:
+  # Master switch. Turning this off swaps SecureChannel for NullChannel and
+  # leaves every call site identical, which is how the Phase 9
+  # communication-overhead figures are measured (same run, one flag flipped).
+  enabled: true
+
+  # 32-byte root key as 64 hex chars. $UAV_SEC_KEY overrides this file when
+  # set, so a real deployment can inject the key without writing it to disk.
+  # The checked-in file is a DEVELOPMENT key generated on this workstation --
+  # regenerate per deployment, keep it 0600, and never reuse it across sites:
+  #   python3 -c "import os;print(os.urandom(32).hex())" > config/chacha20_key.hex
+  #   chmod 600 config/chacha20_key.hex
+  key_file: "~/uav_security_ws/config/chacha20_key.hex"
+
+  # What to do with an envelope whose sequence number was already seen.
+  #
+  # false (default): report it, but still hand the payload to TrustEngine.
+  #   The telemetry_replay scenario exists to measure how fast the *detection
+  #   pipeline* notices replayed telemetry (via _temporal_gps_staleness).
+  #   Dropping replays at the crypto layer would mean supervisor_node's
+  #   callback never runs at all, so that detector would never evaluate and
+  #   the scenario's latency figure would stop measuring what it is for.
+  #   Replays are still counted and published on /security/crypto_events.
+  #
+  # true: refuse replayed envelopes outright. This is the correct setting for
+  #   an actual deployment -- it stops replayed telemetry from reaching the
+  #   trust pipeline at all -- and is what a production build should ship.
+  drop_replayed: false
+
+  # Publish per-node crypto counters (sealed/opened/auth failures/replays)
+  # on /security/crypto_events at this rate. 0 disables.
+  events_rate_hz: 1.0

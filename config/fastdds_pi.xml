@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+FastDDS profile for the Pi side of the PC<->Pi direct link (Phase 9).
+
+Why this is needed: by default FastDDS advertises a unicast locator for every
+local interface. This Pi has three (wlan0 on the WiFi LAN, end0 on the direct
+link, and docker0 on 172.17.0.0/16), so the Pi receives a locator list
+containing 172.17.0.1 -- an address that does not exist on its network.
+Discovery still completes (the topics show up on both sides, which makes this
+look like it is working), but user data then fails to arrive, which presents
+as topics that exist and never deliver a message.
+
+Restricting the transport to the direct-link address makes the advertised
+locator unambiguous, and the explicit initialPeersList means discovery is
+unicast and does not depend on multicast working across the link.
+
+Used via:
+  export FASTRTPS_DEFAULT_PROFILES_FILE=~/uav_security_ws/config/fastdds_pi.xml
+-->
+<dds xmlns="http://www.eprosima.com">
+  <profiles>
+    <transport_descriptors>
+      <transport_descriptor>
+        <transport_id>direct_link_udp</transport_id>
+        <type>UDPv4</type>
+        <interfaceWhiteList>
+          <!-- Loopback is required: without it this participant cannot reach
+               other DDS participants on its OWN machine (the XRCE agent, the
+               sibling nodes), because useBuiltinTransports=false removed the
+               default shared-memory and loopback transports along with the
+               unwanted docker0/WiFi ones. Symptom if omitted: the node starts
+               and publishes happily while receiving nothing at all. -->
+          <address>127.0.0.1</address>
+          <address>192.168.7.72</address>
+        </interfaceWhiteList>
+      </transport_descriptor>
+    </transport_descriptors>
+
+    <participant profile_name="pi_direct_link" is_default_profile="true">
+      <rtps>
+        <userTransports>
+          <transport_id>direct_link_udp</transport_id>
+        </userTransports>
+        <!-- Replaces the default transports rather than adding to them, so
+             no locator for wlo1/docker0 is ever advertised. -->
+        <useBuiltinTransports>false</useBuiltinTransports>
+        <builtin>
+          <initialPeersList>
+            <locator>
+              <udpv4>
+                <address>192.168.7.72</address>
+              </udpv4>
+            </locator>
+            <locator>
+              <udpv4>
+                <address>192.168.7.1</address>
+              </udpv4>
+            </locator>
+          </initialPeersList>
+        </builtin>
+      </rtps>
+    </participant>
+  </profiles>
+</dds>

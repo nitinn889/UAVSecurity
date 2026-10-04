@@ -1,0 +1,37 @@
+{
+  "attack_type": "cmd_inject",
+  "attack_start_us": 1791130500296069,
+  "attack_end_us": 1791130515296019,
+  "attack_duration_s": 15.0,
+  "first_detection_us": 1791130500413075,
+  "detection_latency_s": 0.117006,
+  "total_flags_during_attack": 129,
+  "flags_by_type": {
+    "physics": 42,
+    "cross_sensor": 0,
+    "temporal": 87
+  },
+  "ml_anomaly_detections": 0,
+  "score_minimums": {
+    "gps": 1.0,
+    "imu": 1.0,
+    "barometer": 1.0,
+    "attitude": 1.0,
+    "commands": 0.0
+  },
+  "post_attack_recovery_time_s": 6.2164,
+  "false_positives_pre_attack": 1,
+  "response_actions_fired": [
+    "COMMAND_HOVER",
+    "COMMAND_RTH",
+    "ENTER_DEGRADED_MODE",
+    "FLAG_ONLY",
+    "REJECT_COMMAND",
+    "ROTATE_ENCRYPTION_KEY"
+  ],
+  "first_response_action_latency_s": 0.117847,
+  "highest_response_level_reached": 4,
+  "hover_commanded": true,
+  "rth_commanded": true,
+  "land_commanded": false
+}

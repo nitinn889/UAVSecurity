@@ -1,0 +1,52 @@
+# Raspberry Pi (arm64) runtime for the onboard security supervisor.
+#
+# Deliberately does NOT build px4_msgs. supervisor_node talks only rclpy +
+# std_msgs: it consumes JSON snapshots on /security/sensor_snapshot and emits
+# JSON mitigation intents on /security/mitigation_intent, which actuator_node
+# (on the PC, next to the DDS agent) turns into real px4_msgs writes. That
+# split is what Phase 7 introduced, and it keeps this image free of the
+# rosidl codegen toolchain and a ~10 minute cross-build.
+FROM ros:lyrical-ros-base
+
+ARG DEBIAN_FRONTEND=noninteractive
+
+# python3-cryptography: ChaCha20-Poly1305 for the /security control plane.
+# The rest are what anomaly_detector/trust_engine import at runtime.
+# scikit-learn/joblib come from pip: this base image's enabled apt repos do
+# not carry python3-sklearn or python3-joblib for arm64.
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        python3-numpy \
+        python3-yaml \
+        python3-cryptography \
+        python3-pip \
+        python3-colcon-common-extensions \
+    && rm -rf /var/lib/apt/lists/*
+
+# The pickled IsolationForest is version-sensitive: scikit-learn refuses to
+# unpickle across incompatible versions, so this must match whatever trained
+# models/isolation_forest.pkl on the PC.
+ARG SKLEARN_VERSION=1.7.2
+RUN pip3 install --no-cache-dir --break-system-packages \
+        "scikit-learn==${SKLEARN_VERSION}" joblib
+
+WORKDIR /ws
+
+# Only the package that actually runs here.
+COPY src/security_supervisor /ws/src/security_supervisor
+
+# bash, not sh: ROS's setup.bash locates itself via $BASH_SOURCE, which is
+# empty under dash, so it tries to source /setup.sh and fails.
+RUN /bin/bash -c "source /opt/ros/lyrical/setup.bash && \
+    colcon build --packages-select security_supervisor"
+
+# trust_config.yaml, security_config.yaml and the ML model are read from
+# absolute ~/uav_security_ws paths at runtime, so they are bind-mounted rather
+# than baked in -- that way a config change does not mean an image rebuild,
+# and the ChaCha20 key never becomes a layer in an image.
+ENV ROS_DOMAIN_ID=42
+
+COPY docker/pi_entrypoint.sh /pi_entrypoint.sh
+RUN chmod +x /pi_entrypoint.sh
+
+ENTRYPOINT ["/pi_entrypoint.sh"]
+CMD ["ros2", "run", "security_supervisor", "supervisor"]

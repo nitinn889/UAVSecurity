@@ -1,0 +1,36 @@
+{
+  "attack_type": "imu_noise",
+  "attack_start_us": 1789742523384936,
+  "attack_end_us": 1789742538384986,
+  "attack_duration_s": 15.0,
+  "first_detection_us": 1789742523476998,
+  "detection_latency_s": 0.092062,
+  "total_flags_during_attack": 187,
+  "flags_by_type": {
+    "physics": 146,
+    "cross_sensor": 0,
+    "temporal": 41
+  },
+  "ml_anomaly_detections": 0,
+  "score_minimums": {
+    "gps": 1.0,
+    "imu": 0.0,
+    "barometer": 1.0,
+    "attitude": 1.0,
+    "commands": 0.85
+  },
+  "post_attack_recovery_time_s": 3.491974,
+  "false_positives_pre_attack": 0,
+  "response_actions_fired": [
+    "COMMAND_HOVER",
+    "COMMAND_RTH",
+    "ENTER_DEGRADED_MODE",
+    "FLAG_ONLY",
+    "ISOLATE_IMU"
+  ],
+  "first_response_action_latency_s": 0.093375,
+  "highest_response_level_reached": 4,
+  "hover_commanded": true,
+  "rth_commanded": true,
+  "land_commanded": false
+}

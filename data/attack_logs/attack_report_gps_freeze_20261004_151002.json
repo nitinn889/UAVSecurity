@@ -1,0 +1,36 @@
+{
+  "attack_type": "gps_freeze",
+  "attack_start_us": 1791126587301826,
+  "attack_end_us": 1791126592301834,
+  "attack_duration_s": 5.0,
+  "first_detection_us": 1791126589498761,
+  "detection_latency_s": 2.196935,
+  "total_flags_during_attack": 22,
+  "flags_by_type": {
+    "physics": 0,
+    "cross_sensor": 0,
+    "temporal": 22
+  },
+  "ml_anomaly_detections": 0,
+  "score_minimums": {
+    "gps": 0.0,
+    "imu": 1.0,
+    "barometer": 1.0,
+    "attitude": 1.0,
+    "commands": 1.0
+  },
+  "post_attack_recovery_time_s": null,
+  "false_positives_pre_attack": 0,
+  "response_actions_fired": [
+    "COMMAND_HOVER",
+    "COMMAND_RTH",
+    "ENTER_DEGRADED_MODE",
+    "ISOLATE_GPS",
+    "REDUCE_GPS_WEIGHT"
+  ],
+  "first_response_action_latency_s": 2.196162,
+  "highest_response_level_reached": 4,
+  "hover_commanded": true,
+  "rth_commanded": true,
+  "land_commanded": false
+}

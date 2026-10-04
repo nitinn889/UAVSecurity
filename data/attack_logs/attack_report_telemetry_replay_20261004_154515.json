@@ -1,0 +1,37 @@
+{
+  "attack_type": "telemetry_replay",
+  "attack_start_us": 1791128690294899,
+  "attack_end_us": 1791128705294932,
+  "attack_duration_s": 15.0,
+  "first_detection_us": 1791128692500801,
+  "detection_latency_s": 2.205902,
+  "total_flags_during_attack": 128,
+  "flags_by_type": {
+    "physics": 0,
+    "cross_sensor": 0,
+    "temporal": 128
+  },
+  "ml_anomaly_detections": 0,
+  "score_minimums": {
+    "gps": 0.0,
+    "imu": 1.0,
+    "barometer": 1.0,
+    "attitude": 1.0,
+    "commands": 1.0
+  },
+  "post_attack_recovery_time_s": 7.20452,
+  "false_positives_pre_attack": 0,
+  "response_actions_fired": [
+    "COMMAND_HOVER",
+    "COMMAND_RTH",
+    "ENTER_DEGRADED_MODE",
+    "FLAG_ONLY",
+    "ISOLATE_GPS",
+    "REDUCE_GPS_WEIGHT"
+  ],
+  "first_response_action_latency_s": 2.204732,
+  "highest_response_level_reached": 4,
+  "hover_commanded": true,
+  "rth_commanded": true,
+  "land_commanded": false
+}

@@ -1,0 +1,1297 @@
+{
+  "generated_at": "2026-10-04T16:04:39.696390+00:00",
+  "source_files": [
+    "campaign_main.jsonl"
+  ],
+  "total_runs": 35,
+  "supervisor_on_pi": true,
+  "per_attack": {
+    "cmd_inject": {
+      "runs_attempted": 5,
+      "runs_with_report": 5,
+      "runs_detected": 5,
+      "detection_rate": 1.0,
+      "metrics": {
+        "detection_latency_s": {
+          "n": 5,
+          "mean": 0.12054,
+          "std": 0.022468,
+          "min": 0.095761,
+          "max": 0.160645
+        },
+        "first_response_action_latency_s": {
+          "n": 5,
+          "mean": 0.121597,
+          "std": 0.022523,
+          "min": 0.09644,
+          "max": 0.161787
+        },
+        "post_attack_recovery_time_s": {
+          "n": 5,
+          "mean": 6.273515,
+          "std": 0.059476,
+          "min": 6.205937,
+          "max": 6.356129
+        },
+        "total_flags_during_attack": {
+          "n": 5,
+          "mean": 128.8,
+          "std": 0.979796,
+          "min": 128,
+          "max": 130
+        },
+        "ml_anomaly_detections": {
+          "n": 5,
+          "mean": 0.0,
+          "std": 0.0,
+          "min": 0,
+          "max": 0
+        },
+        "false_positives_pre_attack": {
+          "n": 5,
+          "mean": 0.0,
+          "std": 0.0,
+          "min": 0,
+          "max": 0
+        },
+        "highest_response_level_reached": {
+          "n": 5,
+          "mean": 4.0,
+          "std": 0.0,
+          "min": 4,
+          "max": 4
+        },
+        "score_min_gps": {
+          "n": 5,
+          "mean": 1.0,
+          "std": 0.0,
+          "min": 1.0,
+          "max": 1.0
+        },
+        "score_min_imu": {
+          "n": 5,
+          "mean": 1.0,
+          "std": 0.0,
+          "min": 1.0,
+          "max": 1.0
+        },
+        "score_min_barometer": {
+          "n": 5,
+          "mean": 1.0,
+          "std": 0.0,
+          "min": 1.0,
+          "max": 1.0
+        },
+        "score_min_attitude": {
+          "n": 5,
+          "mean": 1.0,
+          "std": 0.0,
+          "min": 1.0,
+          "max": 1.0
+        },
+        "score_min_commands": {
+          "n": 5,
+          "mean": 0.0,
+          "std": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        }
+      },
+      "false_positive_rate_per_run": 0.0,
+      "false_positives_total": 0,
+      "response_actions_frequency": {
+        "COMMAND_HOVER": 5,
+        "COMMAND_RTH": 5,
+        "ENTER_DEGRADED_MODE": 5,
+        "FLAG_ONLY": 5,
+        "REJECT_COMMAND": 5,
+        "ROTATE_ENCRYPTION_KEY": 5
+      },
+      "pc_link": {
+        "rx_bytes": {
+          "n": 5,
+          "mean": 1078322.8,
+          "std": 3173.060252,
+          "min": 1074374,
+          "max": 1083456
+        },
+        "tx_bytes": {
+          "n": 5,
+          "mean": 1751179.0,
+          "std": 17740.568514,
+          "min": 1724624,
+          "max": 1773234
+        },
+        "throughput_bytes_per_s": {
+          "n": 5,
+          "mean": 39114.38,
+          "std": 1105.922616,
+          "min": 37760.4,
+          "max": 40229.8
+        }
+      },
+      "pi_link": {
+        "rx_bytes": {
+          "n": 5,
+          "mean": 1709025.8,
+          "std": 17208.591673,
+          "min": 1683664,
+          "max": 1730548
+        },
+        "tx_bytes": {
+          "n": 5,
+          "mean": 1079106.8,
+          "std": 3166.894403,
+          "min": 1075146,
+          "max": 1084236
+        }
+      },
+      "pi_resources": {
+        "supervisor_cpu_percent": {
+          "across_run_means": {
+            "n": 5,
+            "mean": 15.046,
+            "std": 0.387691,
+            "min": 14.81,
+            "max": 15.82
+          },
+          "across_run_peaks": {
+            "n": 5,
+            "mean": 21.54,
+            "std": 0.387814,
+            "min": 21.2,
+            "max": 22.3
+          }
+        },
+        "supervisor_rss_mb": {
+          "across_run_means": {
+            "n": 5,
+            "mean": 223.59,
+            "std": 0.243557,
+            "min": 223.15,
+            "max": 223.81
+          },
+          "across_run_peaks": {
+            "n": 5,
+            "mean": 228.808,
+            "std": 0.410141,
+            "min": 228.0,
+            "max": 229.09
+          }
+        },
+        "loadavg_1min": {
+          "across_run_means": {
+            "n": 5,
+            "mean": 0.356,
+            "std": 0.096457,
+            "min": 0.25,
+            "max": 0.53
+          },
+          "across_run_peaks": {
+            "n": 5,
+            "mean": 0.59,
+            "std": 0.130231,
+            "min": 0.42,
+            "max": 0.8
+          }
+        },
+        "mem_used_mb": {
+          "across_run_means": {
+            "n": 5,
+            "mean": 676.54,
+            "std": 1.168914,
+            "min": 674.56,
+            "max": 677.73
+          },
+          "across_run_peaks": {
+            "n": 5,
+            "mean": 698.4,
+            "std": 8.475848,
+            "min": 684.0,
+            "max": 709.0
+          }
+        }
+      }
+    },
+    "combined_gps_freeze_imu_noise": {
+      "runs_attempted": 5,
+      "combined": true,
+      "component_attacks": [
+        "gps_freeze",
+        "imu_noise"
+      ],
+      "simultaneous_component_detection_rate": 1.0,
+      "per_component": {
+        "gps_freeze": {
+          "runs": 5,
+          "detected": 5,
+          "detection_rate": 1.0,
+          "detection_latency_s": {
+            "n": 5,
+            "mean": 12.358356,
+            "std": 0.224685,
+            "min": 12.053153,
+            "max": 12.612826
+          }
+        },
+        "imu_noise": {
+          "runs": 5,
+          "detected": 5,
+          "detection_rate": 1.0,
+          "detection_latency_s": {
+            "n": 5,
+            "mean": 0.306409,
+            "std": 0.1549,
+            "min": 0.095795,
+            "max": 0.45264
+          }
+        }
+      }
+    },
+    "gps_deny": {
+      "runs_attempted": 5,
+      "runs_with_report": 5,
+      "runs_detected": 5,
+      "detection_rate": 1.0,
+      "metrics": {
+        "detection_latency_s": {
+          "n": 5,
+          "mean": 2.213076,
+          "std": 0.052031,
+          "min": 2.158214,
+          "max": 2.303374
+        },
+        "first_response_action_latency_s": {
+          "n": 5,
+          "mean": 2.214107,
+          "std": 0.051957,
+          "min": 2.15929,
+          "max": 2.304126
+        },
+        "post_attack_recovery_time_s": {
+          "n": 5,
+          "mean": 3.531716,
+          "std": 0.051053,
+          "min": 3.455373,
+          "max": 3.603259
+        },
+        "total_flags_during_attack": {
+          "n": 5,
+          "mean": 128.2,
+          "std": 0.748331,
+          "min": 127,
+          "max": 129
+        },
+        "ml_anomaly_detections": {
+          "n": 5,
+          "mean": 0.0,
+          "std": 0.0,
+          "min": 0,
+          "max": 0
+        },
+        "false_positives_pre_attack": {
+          "n": 5,
+          "mean": 0.0,
+          "std": 0.0,
+          "min": 0,
+          "max": 0
+        },
+        "highest_response_level_reached": {
+          "n": 5,
+          "mean": 4.0,
+          "std": 0.0,
+          "min": 4,
+          "max": 4
+        },
+        "score_min_gps": {
+          "n": 5,
+          "mean": 0.0,
+          "std": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "score_min_imu": {
+          "n": 5,
+          "mean": 1.0,
+          "std": 0.0,
+          "min": 1.0,
+          "max": 1.0
+        },
+        "score_min_barometer": {
+          "n": 5,
+          "mean": 1.0,
+          "std": 0.0,
+          "min": 1.0,
+          "max": 1.0
+        },
+        "score_min_attitude": {
+          "n": 5,
+          "mean": 1.0,
+          "std": 0.0,
+          "min": 1.0,
+          "max": 1.0
+        },
+        "score_min_commands": {
+          "n": 5,
+          "mean": 1.0,
+          "std": 0.0,
+          "min": 1.0,
+          "max": 1.0
+        }
+      },
+      "false_positive_rate_per_run": 0.0,
+      "false_positives_total": 0,
+      "response_actions_frequency": {
+        "COMMAND_HOVER": 5,
+        "COMMAND_RTH": 5,
+        "ENTER_DEGRADED_MODE": 5,
+        "FLAG_ONLY": 5,
+        "ISOLATE_GPS": 5,
+        "REDUCE_GPS_WEIGHT": 5
+      },
+      "pc_link": {
+        "rx_bytes": {
+          "n": 5,
+          "mean": 1035463.2,
+          "std": 5732.630056,
+          "min": 1024500,
+          "max": 1040262
+        },
+        "tx_bytes": {
+          "n": 5,
+          "mean": 1754153.6,
+          "std": 20641.92012,
+          "min": 1724382,
+          "max": 1782044
+        },
+        "throughput_bytes_per_s": {
+          "n": 5,
+          "mean": 37498.82,
+          "std": 796.406297,
+          "min": 36810.1,
+          "max": 39045.7
+        }
+      },
+      "pi_link": {
+        "rx_bytes": {
+          "n": 5,
+          "mean": 1711958.4,
+          "std": 20088.247008,
+          "min": 1683352,
+          "max": 1739456
+        },
+        "tx_bytes": {
+          "n": 5,
+          "mean": 1036260.4,
+          "std": 5715.558471,
+          "min": 1025338,
+          "max": 1041034
+        }
+      },
+      "pi_resources": {
+        "supervisor_cpu_percent": {
+          "across_run_means": {
+            "n": 5,
+            "mean": 15.094,
+            "std": 0.367891,
+            "min": 14.75,
+            "max": 15.76
+          },
+          "across_run_peaks": {
+            "n": 5,
+            "mean": 21.5,
+            "std": 0.501996,
+            "min": 20.8,
+            "max": 22.3
+          }
+        },
+        "supervisor_rss_mb": {
+          "across_run_means": {
+            "n": 5,
+            "mean": 223.702,
+            "std": 0.197727,
+            "min": 223.43,
+            "max": 223.93
+          },
+          "across_run_peaks": {
+            "n": 5,
+            "mean": 228.836,
+            "std": 0.152394,
+            "min": 228.56,
+            "max": 229.02
+          }
+        },
+        "loadavg_1min": {
+          "across_run_means": {
+            "n": 5,
+            "mean": 0.196,
+            "std": 0.086856,
+            "min": 0.06,
+            "max": 0.29
+          },
+          "across_run_peaks": {
+            "n": 5,
+            "mean": 0.316,
+            "std": 0.136323,
+            "min": 0.1,
+            "max": 0.48
+          }
+        },
+        "mem_used_mb": {
+          "across_run_means": {
+            "n": 5,
+            "mean": 678.034,
+            "std": 0.839038,
+            "min": 676.8,
+            "max": 679.12
+          },
+          "across_run_peaks": {
+            "n": 5,
+            "mean": 701.4,
+            "std": 5.885576,
+            "min": 694.0,
+            "max": 711.0
+          }
+        }
+      }
+    },
+    "gps_freeze": {
+      "runs_attempted": 5,
+      "runs_with_report": 5,
+      "runs_detected": 5,
+      "detection_rate": 1.0,
+      "metrics": {
+        "detection_latency_s": {
+          "n": 5,
+          "mean": 2.294954,
+          "std": 0.062247,
+          "min": 2.216146,
+          "max": 2.360916
+        },
+        "first_response_action_latency_s": {
+          "n": 5,
+          "mean": 2.295544,
+          "std": 0.062814,
+          "min": 2.214969,
+          "max": 2.361735
+        },
+        "post_attack_recovery_time_s": {
+          "n": 5,
+          "mean": 3.535092,
+          "std": 0.016654,
+          "min": 3.513258,
+          "max": 3.561734
+        },
+        "total_flags_during_attack": {
+          "n": 5,
+          "mean": 127.4,
+          "std": 0.489898,
+          "min": 127,
+          "max": 128
+        },
+        "ml_anomaly_detections": {
+          "n": 5,
+          "mean": 0.0,
+          "std": 0.0,
+          "min": 0,
+          "max": 0
+        },
+        "false_positives_pre_attack": {
+          "n": 5,
+          "mean": 0.0,
+          "std": 0.0,
+          "min": 0,
+          "max": 0
+        },
+        "highest_response_level_reached": {
+          "n": 5,
+          "mean": 4.0,
+          "std": 0.0,
+          "min": 4,
+          "max": 4
+        },
+        "score_min_gps": {
+          "n": 5,
+          "mean": 0.0,
+          "std": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "score_min_imu": {
+          "n": 5,
+          "mean": 1.0,
+          "std": 0.0,
+          "min": 1.0,
+          "max": 1.0
+        },
+        "score_min_barometer": {
+          "n": 5,
+          "mean": 1.0,
+          "std": 0.0,
+          "min": 1.0,
+          "max": 1.0
+        },
+        "score_min_attitude": {
+          "n": 5,
+          "mean": 1.0,
+          "std": 0.0,
+          "min": 1.0,
+          "max": 1.0
+        },
+        "score_min_commands": {
+          "n": 5,
+          "mean": 1.0,
+          "std": 0.0,
+          "min": 1.0,
+          "max": 1.0
+        }
+      },
+      "false_positive_rate_per_run": 0.0,
+      "false_positives_total": 0,
+      "response_actions_frequency": {
+        "COMMAND_HOVER": 5,
+        "COMMAND_RTH": 5,
+        "ENTER_DEGRADED_MODE": 5,
+        "FLAG_ONLY": 5,
+        "ISOLATE_GPS": 5,
+        "REDUCE_GPS_WEIGHT": 5
+      },
+      "pc_link": {
+        "rx_bytes": {
+          "n": 5,
+          "mean": 1029481.2,
+          "std": 7679.248463,
+          "min": 1016832,
+          "max": 1038856
+        },
+        "tx_bytes": {
+          "n": 5,
+          "mean": 1743051.4,
+          "std": 16740.142145,
+          "min": 1720362,
+          "max": 1765812
+        },
+        "throughput_bytes_per_s": {
+          "n": 5,
+          "mean": 38318.22,
+          "std": 1002.831035,
+          "min": 37018.4,
+          "max": 39273.5
+        }
+      },
+      "pi_link": {
+        "rx_bytes": {
+          "n": 5,
+          "mean": 1701142.6,
+          "std": 16242.522361,
+          "min": 1679664,
+          "max": 1722808
+        },
+        "tx_bytes": {
+          "n": 5,
+          "mean": 1030266.0,
+          "std": 7658.679364,
+          "min": 1017676,
+          "max": 1039632
+        }
+      },
+      "pi_resources": {
+        "supervisor_cpu_percent": {
+          "across_run_means": {
+            "n": 5,
+            "mean": 14.912,
+            "std": 0.284,
+            "min": 14.67,
+            "max": 15.41
+          },
+          "across_run_peaks": {
+            "n": 5,
+            "mean": 21.4,
+            "std": 0.328634,
+            "min": 21.1,
+            "max": 22.0
+          }
+        },
+        "supervisor_rss_mb": {
+          "across_run_means": {
+            "n": 5,
+            "mean": 223.636,
+            "std": 0.149746,
+            "min": 223.42,
+            "max": 223.82
+          },
+          "across_run_peaks": {
+            "n": 5,
+            "mean": 228.856,
+            "std": 0.0799,
+            "min": 228.73,
+            "max": 228.95
+          }
+        },
+        "loadavg_1min": {
+          "across_run_means": {
+            "n": 5,
+            "mean": 0.374,
+            "std": 0.093936,
+            "min": 0.26,
+            "max": 0.53
+          },
+          "across_run_peaks": {
+            "n": 5,
+            "mean": 0.588,
+            "std": 0.105717,
+            "min": 0.47,
+            "max": 0.76
+          }
+        },
+        "mem_used_mb": {
+          "across_run_means": {
+            "n": 5,
+            "mean": 678.79,
+            "std": 2.065265,
+            "min": 676.87,
+            "max": 682.73
+          },
+          "across_run_peaks": {
+            "n": 5,
+            "mean": 707.6,
+            "std": 11.182129,
+            "min": 698.0,
+            "max": 729.0
+          }
+        }
+      }
+    },
+    "gps_spoof": {
+      "runs_attempted": 5,
+      "runs_with_report": 5,
+      "runs_detected": 3,
+      "detection_rate": 0.6,
+      "metrics": {
+        "detection_latency_s": {
+          "n": 3,
+          "mean": 1.324804,
+          "std": 1.072852,
+          "min": 0.323954,
+          "max": 2.812772
+        },
+        "first_response_action_latency_s": {
+          "n": 4,
+          "mean": 4.779684,
+          "std": 6.055153,
+          "min": 0.324795,
+          "max": 15.143519
+        },
+        "post_attack_recovery_time_s": {
+          "n": 4,
+          "mean": 0.028744,
+          "std": 0.012748,
+          "min": 0.010314,
+          "max": 0.043105
+        },
+        "total_flags_during_attack": {
+          "n": 5,
+          "mean": 0.6,
+          "std": 0.489898,
+          "min": 0,
+          "max": 1
+        },
+        "ml_anomaly_detections": {
+          "n": 5,
+          "mean": 0.0,
+          "std": 0.0,
+          "min": 0,
+          "max": 0
+        },
+        "false_positives_pre_attack": {
+          "n": 5,
+          "mean": 0.0,
+          "std": 0.0,
+          "min": 0,
+          "max": 0
+        },
+        "highest_response_level_reached": {
+          "n": 5,
+          "mean": 1.6,
+          "std": 0.8,
+          "min": 0,
+          "max": 2
+        },
+        "score_min_gps": {
+          "n": 5,
+          "mean": 0.97,
+          "std": 0.024495,
+          "min": 0.95,
+          "max": 1.0
+        },
+        "score_min_imu": {
+          "n": 5,
+          "mean": 1.0,
+          "std": 0.0,
+          "min": 1.0,
+          "max": 1.0
+        },
+        "score_min_barometer": {
+          "n": 5,
+          "mean": 1.0,
+          "std": 0.0,
+          "min": 1.0,
+          "max": 1.0
+        },
+        "score_min_attitude": {
+          "n": 5,
+          "mean": 1.0,
+          "std": 0.0,
+          "min": 1.0,
+          "max": 1.0
+        },
+        "score_min_commands": {
+          "n": 5,
+          "mean": 1.0,
+          "std": 0.0,
+          "min": 1.0,
+          "max": 1.0
+        }
+      },
+      "false_positive_rate_per_run": 0.0,
+      "false_positives_total": 0,
+      "response_actions_frequency": {
+        "ENTER_DEGRADED_MODE": 4,
+        "FLAG_ONLY": 4,
+        "REDUCE_GPS_WEIGHT": 4
+      },
+      "pc_link": {
+        "rx_bytes": {
+          "n": 5,
+          "mean": 737997.8,
+          "std": 340174.118657,
+          "min": 74572,
+          "max": 961910
+        },
+        "tx_bytes": {
+          "n": 5,
+          "mean": 1371555.6,
+          "std": 616772.554719,
+          "min": 167207,
+          "max": 1775870
+        },
+        "throughput_bytes_per_s": {
+          "n": 5,
+          "mean": 28495.34,
+          "std": 13005.124724,
+          "min": 3248.0,
+          "max": 37994.3
+        }
+      },
+      "pi_link": {
+        "rx_bytes": {
+          "n": 5,
+          "mean": 1333240.8,
+          "std": 608498.312999,
+          "min": 146440,
+          "max": 1733660
+        },
+        "tx_bytes": {
+          "n": 5,
+          "mean": 739949.8,
+          "std": 340439.859092,
+          "min": 74888,
+          "max": 962690
+        }
+      },
+      "pi_resources": {
+        "supervisor_cpu_percent": {
+          "across_run_means": {
+            "n": 5,
+            "mean": 12.544,
+            "std": 3.731839,
+            "min": 5.74,
+            "max": 15.4
+          },
+          "across_run_peaks": {
+            "n": 5,
+            "mean": 19.14,
+            "std": 3.015692,
+            "min": 15.4,
+            "max": 21.8
+          }
+        },
+        "supervisor_rss_mb": {
+          "across_run_means": {
+            "n": 5,
+            "mean": 222.508,
+            "std": 1.60008,
+            "min": 219.41,
+            "max": 223.87
+          },
+          "across_run_peaks": {
+            "n": 5,
+            "mean": 226.258,
+            "std": 3.528175,
+            "min": 219.42,
+            "max": 228.94
+          }
+        },
+        "loadavg_1min": {
+          "across_run_means": {
+            "n": 5,
+            "mean": 0.188,
+            "std": 0.081339,
+            "min": 0.09,
+            "max": 0.3
+          },
+          "across_run_peaks": {
+            "n": 5,
+            "mean": 0.296,
+            "std": 0.103846,
+            "min": 0.17,
+            "max": 0.43
+          }
+        },
+        "mem_used_mb": {
+          "across_run_means": {
+            "n": 5,
+            "mean": 678.714,
+            "std": 2.260545,
+            "min": 675.62,
+            "max": 682.2
+          },
+          "across_run_peaks": {
+            "n": 5,
+            "mean": 701.2,
+            "std": 9.26067,
+            "min": 691.0,
+            "max": 716.0
+          }
+        }
+      }
+    },
+    "imu_noise": {
+      "runs_attempted": 5,
+      "runs_with_report": 5,
+      "runs_detected": 5,
+      "detection_rate": 1.0,
+      "metrics": {
+        "detection_latency_s": {
+          "n": 5,
+          "mean": 0.10317,
+          "std": 0.0516,
+          "min": 0.040332,
+          "max": 0.159732
+        },
+        "first_response_action_latency_s": {
+          "n": 5,
+          "mean": 0.103524,
+          "std": 0.051562,
+          "min": 0.039574,
+          "max": 0.160815
+        },
+        "post_attack_recovery_time_s": {
+          "n": 5,
+          "mean": 3.49951,
+          "std": 0.052398,
+          "min": 3.435301,
+          "max": 3.556682
+        },
+        "total_flags_during_attack": {
+          "n": 5,
+          "mean": 149.4,
+          "std": 0.489898,
+          "min": 149,
+          "max": 150
+        },
+        "ml_anomaly_detections": {
+          "n": 5,
+          "mean": 0.0,
+          "std": 0.0,
+          "min": 0,
+          "max": 0
+        },
+        "false_positives_pre_attack": {
+          "n": 5,
+          "mean": 0.0,
+          "std": 0.0,
+          "min": 0,
+          "max": 0
+        },
+        "highest_response_level_reached": {
+          "n": 5,
+          "mean": 4.0,
+          "std": 0.0,
+          "min": 4,
+          "max": 4
+        },
+        "score_min_gps": {
+          "n": 5,
+          "mean": 1.0,
+          "std": 0.0,
+          "min": 1.0,
+          "max": 1.0
+        },
+        "score_min_imu": {
+          "n": 5,
+          "mean": 0.0,
+          "std": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "score_min_barometer": {
+          "n": 5,
+          "mean": 1.0,
+          "std": 0.0,
+          "min": 1.0,
+          "max": 1.0
+        },
+        "score_min_attitude": {
+          "n": 5,
+          "mean": 1.0,
+          "std": 0.0,
+          "min": 1.0,
+          "max": 1.0
+        },
+        "score_min_commands": {
+          "n": 5,
+          "mean": 1.0,
+          "std": 0.0,
+          "min": 1.0,
+          "max": 1.0
+        }
+      },
+      "false_positive_rate_per_run": 0.0,
+      "false_positives_total": 0,
+      "response_actions_frequency": {
+        "COMMAND_HOVER": 5,
+        "COMMAND_RTH": 5,
+        "ENTER_DEGRADED_MODE": 5,
+        "FLAG_ONLY": 5,
+        "ISOLATE_IMU": 5
+      },
+      "pc_link": {
+        "rx_bytes": {
+          "n": 5,
+          "mean": 1048034.4,
+          "std": 6955.484788,
+          "min": 1041550,
+          "max": 1057042
+        },
+        "tx_bytes": {
+          "n": 5,
+          "mean": 1736168.0,
+          "std": 7156.112576,
+          "min": 1727852,
+          "max": 1749074
+        },
+        "throughput_bytes_per_s": {
+          "n": 5,
+          "mean": 38487.06,
+          "std": 1123.132921,
+          "min": 37032.0,
+          "max": 39435.1
+        }
+      },
+      "pi_link": {
+        "rx_bytes": {
+          "n": 5,
+          "mean": 1694120.0,
+          "std": 6529.07001,
+          "min": 1686748,
+          "max": 1705968
+        },
+        "tx_bytes": {
+          "n": 5,
+          "mean": 1048807.2,
+          "std": 6956.397412,
+          "min": 1042322,
+          "max": 1057814
+        }
+      },
+      "pi_resources": {
+        "supervisor_cpu_percent": {
+          "across_run_means": {
+            "n": 5,
+            "mean": 14.914,
+            "std": 0.35387,
+            "min": 14.65,
+            "max": 15.61
+          },
+          "across_run_peaks": {
+            "n": 5,
+            "mean": 21.2,
+            "std": 0.275681,
+            "min": 20.9,
+            "max": 21.7
+          }
+        },
+        "supervisor_rss_mb": {
+          "across_run_means": {
+            "n": 5,
+            "mean": 223.578,
+            "std": 0.244818,
+            "min": 223.1,
+            "max": 223.76
+          },
+          "across_run_peaks": {
+            "n": 5,
+            "mean": 228.62,
+            "std": 0.427504,
+            "min": 227.78,
+            "max": 228.98
+          }
+        },
+        "loadavg_1min": {
+          "across_run_means": {
+            "n": 5,
+            "mean": 0.132,
+            "std": 0.144693,
+            "min": 0.03,
+            "max": 0.41
+          },
+          "across_run_peaks": {
+            "n": 5,
+            "mean": 0.254,
+            "std": 0.221684,
+            "min": 0.05,
+            "max": 0.67
+          }
+        },
+        "mem_used_mb": {
+          "across_run_means": {
+            "n": 5,
+            "mean": 677.392,
+            "std": 0.47818,
+            "min": 676.53,
+            "max": 677.88
+          },
+          "across_run_peaks": {
+            "n": 5,
+            "mean": 699.2,
+            "std": 4.01995,
+            "min": 693.0,
+            "max": 704.0
+          }
+        }
+      }
+    },
+    "telemetry_replay": {
+      "runs_attempted": 5,
+      "runs_with_report": 5,
+      "runs_detected": 5,
+      "detection_rate": 1.0,
+      "metrics": {
+        "detection_latency_s": {
+          "n": 5,
+          "mean": 1.881086,
+          "std": 0.662803,
+          "min": 0.55664,
+          "max": 2.264452
+        },
+        "first_response_action_latency_s": {
+          "n": 5,
+          "mean": 1.88125,
+          "std": 0.662408,
+          "min": 0.557639,
+          "max": 2.265644
+        },
+        "post_attack_recovery_time_s": {
+          "n": 5,
+          "mean": 7.220416,
+          "std": 0.047861,
+          "min": 7.156331,
+          "max": 7.286159
+        },
+        "total_flags_during_attack": {
+          "n": 5,
+          "mean": 129.0,
+          "std": 1.095445,
+          "min": 128,
+          "max": 131
+        },
+        "ml_anomaly_detections": {
+          "n": 5,
+          "mean": 0.0,
+          "std": 0.0,
+          "min": 0,
+          "max": 0
+        },
+        "false_positives_pre_attack": {
+          "n": 5,
+          "mean": 0.2,
+          "std": 0.4,
+          "min": 0,
+          "max": 1
+        },
+        "highest_response_level_reached": {
+          "n": 5,
+          "mean": 4.0,
+          "std": 0.0,
+          "min": 4,
+          "max": 4
+        },
+        "score_min_gps": {
+          "n": 5,
+          "mean": 0.0,
+          "std": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "score_min_imu": {
+          "n": 5,
+          "mean": 0.94,
+          "std": 0.12,
+          "min": 0.7,
+          "max": 1.0
+        },
+        "score_min_barometer": {
+          "n": 5,
+          "mean": 1.0,
+          "std": 0.0,
+          "min": 1.0,
+          "max": 1.0
+        },
+        "score_min_attitude": {
+          "n": 5,
+          "mean": 1.0,
+          "std": 0.0,
+          "min": 1.0,
+          "max": 1.0
+        },
+        "score_min_commands": {
+          "n": 5,
+          "mean": 1.0,
+          "std": 0.0,
+          "min": 1.0,
+          "max": 1.0
+        }
+      },
+      "false_positive_rate_per_run": 0.2,
+      "false_positives_total": 1,
+      "response_actions_frequency": {
+        "COMMAND_HOVER": 5,
+        "COMMAND_RTH": 5,
+        "ENTER_DEGRADED_MODE": 5,
+        "FLAG_ONLY": 5,
+        "ISOLATE_GPS": 5,
+        "REDUCE_GPS_WEIGHT": 5
+      },
+      "pc_link": {
+        "rx_bytes": {
+          "n": 5,
+          "mean": 1105045.6,
+          "std": 7028.415969,
+          "min": 1095954,
+          "max": 1115330
+        },
+        "tx_bytes": {
+          "n": 5,
+          "mean": 2021643.0,
+          "std": 8656.545085,
+          "min": 2008726,
+          "max": 2032238
+        },
+        "throughput_bytes_per_s": {
+          "n": 5,
+          "mean": 43226.14,
+          "std": 1455.869382,
+          "min": 41382.3,
+          "max": 44634.1
+        }
+      },
+      "pi_link": {
+        "rx_bytes": {
+          "n": 5,
+          "mean": 1975765.0,
+          "std": 8388.780174,
+          "min": 1963240,
+          "max": 1986024
+        },
+        "tx_bytes": {
+          "n": 5,
+          "mean": 1105822.4,
+          "std": 7020.887739,
+          "min": 1096730,
+          "max": 1116094
+        }
+      },
+      "pi_resources": {
+        "supervisor_cpu_percent": {
+          "across_run_means": {
+            "n": 5,
+            "mean": 14.744,
+            "std": 0.053889,
+            "min": 14.66,
+            "max": 14.83
+          },
+          "across_run_peaks": {
+            "n": 5,
+            "mean": 21.16,
+            "std": 0.08,
+            "min": 21.1,
+            "max": 21.3
+          }
+        },
+        "supervisor_rss_mb": {
+          "across_run_means": {
+            "n": 5,
+            "mean": 223.726,
+            "std": 0.263712,
+            "min": 223.34,
+            "max": 224.07
+          },
+          "across_run_peaks": {
+            "n": 5,
+            "mean": 228.97,
+            "std": 0.188361,
+            "min": 228.66,
+            "max": 229.19
+          }
+        },
+        "loadavg_1min": {
+          "across_run_means": {
+            "n": 5,
+            "mean": 0.124,
+            "std": 0.098712,
+            "min": 0.05,
+            "max": 0.31
+          },
+          "across_run_peaks": {
+            "n": 5,
+            "mean": 0.212,
+            "std": 0.161914,
+            "min": 0.09,
+            "max": 0.52
+          }
+        },
+        "mem_used_mb": {
+          "across_run_means": {
+            "n": 5,
+            "mean": 678.42,
+            "std": 1.203478,
+            "min": 677.4,
+            "max": 680.75
+          },
+          "across_run_peaks": {
+            "n": 5,
+            "mean": 703.6,
+            "std": 8.499412,
+            "min": 695.0,
+            "max": 719.0
+          }
+        }
+      }
+    }
+  },
+  "overall": {
+    "attack_scenarios": 6,
+    "runs_with_report": 30,
+    "runs_detected": 28,
+    "detection_accuracy": 0.9333,
+    "detection_latency_s": {
+      "n": 28,
+      "mean": 1.322805,
+      "std": 1.045565,
+      "min": 0.040332,
+      "max": 2.812772
+    },
+    "false_positives_pre_attack_total": 1
+  }
+}

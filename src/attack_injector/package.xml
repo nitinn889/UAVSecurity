@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>attack_injector</name>
+  <version>0.1.0</version>
+  <description>Attack scenario injector for testing UAV security supervisor resilience (GPS spoofing, command injection, telemetry replay).</description>
+  <maintainer email="nitinnandakumar5237@gmail.com">nitin-nandakumar</maintainer>
+  <license>Apache-2.0</license>
+
+  <depend>rclpy</depend>
+  <depend>std_msgs</depend>
+  <depend>px4_msgs</depend>
+  <depend>launch</depend>
+  <depend>launch_ros</depend>
+  <exec_depend>security_supervisor</exec_depend>
+
+  <test_depend>ament_copyright</test_depend>
+  <test_depend>ament_flake8</test_depend>
+  <test_depend>ament_pep257</test_depend>
+  <test_depend>python3-pytest</test_depend>
+
+  <export>
+    <build_type>ament_python</build_type>
+  </export>
+</package>

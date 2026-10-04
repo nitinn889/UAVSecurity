@@ -1,0 +1,181 @@
+# Dynamic trust scoring configuration (Phase 3).
+# TrustEngine loads this file at startup; no thresholds are hardcoded in
+# trust_engine.py. All values are tunable here without touching code.
+
+# --- Score dynamics ---
+initial_score: 1.0
+score_min: 0.0
+score_max: 1.0
+decay_minor: -0.05        # per-update decay for a 'minor' severity flag
+decay_moderate: -0.15     # per-update decay for a 'moderate' severity flag
+decay_severe: -0.30       # per-update decay for a 'severe' severity flag
+recovery_rate: 0.02       # per-update recovery when no flags are active, capped at score_max
+
+# EMA smoothing (alpha=0.3) is applied to a *separate* status-hysteresis score
+# used only for the /security/status TRUSTED/DEGRADED/UNTRUSTED label, so a
+# single borderline update doesn't flap the human-readable status. The
+# canonical per-component score (published in /security/trust_scores and used
+# by TrustEngine.update()'s return value) reacts directly and immediately to
+# detected anomalies, per the "physics checks are hard rules, immediate"
+# requirement — blending the canonical score toward its own history via EMA
+# would mathematically cap a single update's drop at (1 - ema_alpha) * old
+# score, making it impossible for one severe violation to ever pull a score
+# below 0.7 starting from 1.0.
+ema_alpha: 0.3
+
+# Trust status bands used for TRUSTED / DEGRADED / UNTRUSTED classification.
+status_untrusted_max: 0.4   # score < this => UNTRUSTED
+status_trusted_min: 0.7     # score > this => TRUSTED (between the two => DEGRADED)
+
+# Generic severity classifier for magnitude-based (ratio) physics/cross-sensor
+# checks that aren't given explicit tiers elsewhere in this file: severity is
+# chosen from how many multiples of the threshold the measured value reaches.
+ratio_moderate: 1.5
+ratio_severe: 3.0
+
+# --- GPS physics checks ---
+gps_max_horiz_speed: 20.0   # m/s; x500 SITL max ~12 m/s, allow headroom
+gps_max_vert_speed: 5.0     # m/s
+gps_max_alt_jump: 10.0      # m between consecutive snapshots (10 Hz)
+gps_max_pos_jump: 50.0      # m between consecutive snapshots (10 Hz)
+
+# --- IMU physics checks ---
+imu_accel_min: 0.5          # m/s^2, total accel vector magnitude (free-fall ~0)
+imu_accel_max: 50.0         # m/s^2 (crash-level)
+imu_gyro_max: 10.0          # rad/s (normal flight is well under 3 rad/s)
+
+# --- Barometer physics checks ---
+baro_pressure_min: 70000.0  # Pa (~3000 m ASL ceiling for this project)
+baro_pressure_max: 110000.0 # Pa
+baro_max_delta: 500.0       # Pa between consecutive snapshots (10 Hz)
+
+# --- Command physics checks ---
+# 400=ARM/DISARM, 176=SET_MODE, 192=TAKEOFF, 193=LAND, 21=LAND_START,
+# 22=TAKEOFF_AUTO, 300=MISSION_START, 20=RETURN_TO_LAUNCH,
+# 821=SET_GPS_GLOBAL_ORIGIN. The last two are issued by response_engine's
+# own mitigation actions (COMMAND_RTH, REDUCE_GPS_WEIGHT) -- without them
+# whitelisted, sensor_monitor picking up the supervisor's own commands on
+# /fmu/in/vehicle_command would flag them as hostile and trigger more
+# response actions in a self-inflicted feedback loop.
+allowed_command_ids: [400, 176, 192, 193, 21, 22, 300, 20, 821]
+arm_command_id: 400
+arm_valid_param1: [0.0, 1.0]
+
+# --- Cross-sensor checks ---
+# GPS altitude vs barometer altitude. Tiers per Task 3: 15-30m minor,
+# 30-60m moderate, >60m severe.
+cross_gps_baro_alt_thresh: 15.0
+cross_gps_baro_alt_moderate: 30.0
+cross_gps_baro_alt_severe: 60.0
+
+# GPS-receiver velocity vs EKF-fused local-position velocity (fixed severity).
+cross_gps_ekf_vel_thresh: 3.0
+
+# Attitude (from quaternion) vs gyro-integrated expected attitude change.
+cross_att_imu_thresh: 0.3     # rad -> flags attitude only, minor
+cross_att_imu_severe: 1.0     # rad -> flags both attitude and imu, severe
+
+# --- Temporal (sliding window) checks ---
+temporal_window_size: 30              # snapshots (~3s at 10 Hz)
+
+temporal_gps_frozen_thresh: 1.0e-9    # degrees, rolling std of lat/lon
+temporal_gps_frozen_min_consecutive: 20
+temporal_gps_moving_speed_sq_thresh: 0.25  # m^2/s^2; also used as the
+                                            # hover/stationary complement for
+                                            # the IMU hover-bias check, since
+                                            # PX4 has no literal "hover"
+                                            # nav_state to key off of.
+
+temporal_alt_drift_thresh: 20.0       # m, rolling mean GPS alt vs baro alt
+
+temporal_imu_frozen_thresh: 0.001     # m/s^2, rolling std of ax/ay/az
+temporal_accel_bias_thresh: 3.0       # m/s^2, |mean accel mag - gravity| during hover
+gravity_reference: 9.81               # m/s^2
+
+temporal_cmd_window: 10.0             # seconds
+temporal_cmd_rate_max: 20             # commands allowed in temporal_cmd_window
+flight_warmup_seconds: 5.0            # command IDs first seen after this are flagged
+
+# Phase 6 Task 5: once 3s pass with no new non-whitelisted command, shrink
+# the flood-count lookback from temporal_cmd_window down to this, so stale
+# invalid commands from the attack drain out of the count faster instead
+# of keeping the flood flag (and thus the commands score) pinned down for
+# the full original 10s window after the attack itself has already stopped.
+temporal_cmd_recovery_window: 5.0     # seconds
+temporal_cmd_recovery_quiet_s: 3.0    # seconds of no invalid commands before shrinking
+
+# --- Phase 5: GPS staleness detection ---
+# If the GPS stream stops advancing (no new messages: gps_deny; or the
+# outer snapshot timestamp itself stops advancing monotonically: replayed
+# telemetry) for longer than this, flag GPS severe regardless of armed
+# state. See trust_engine.py's _temporal_gps_staleness for why two signals
+# (value-unchanged AND timestamp-non-monotonic) are both needed to catch
+# both gps_deny/gps_freeze and telemetry_replay with one check.
+gps_stale_thresh_us: 2000000  # 2 seconds
+
+# --- Phase 4: ML anomaly fusion ---
+# Extra per-component decay applied when the ML anomaly detector flags
+# is_anomaly=true, scaled by its confidence: ml_penalty = confidence *
+# ml_trust_penalty_scale. Applied only to components already flagged by
+# TrustEngine this cycle, or components implied by the ML result's
+# top_features (see supervisor_node.py's FEATURE_COMPONENT_MAP).
+ml_trust_penalty_scale: 0.2
+
+# Minimum ML confidence before an is_anomaly=true result is allowed to move
+# a trust score at all.
+#
+# The IsolationForest was trained with contamination=0.1 (see
+# models/training_report.json), which *by construction* puts ~10% of the
+# training distribution below its decision threshold -- so is_anomaly=true
+# fires on ordinary flight data as a matter of calibration, not evidence.
+# Because the training set is described in that same report as
+# "mostly-hover", the least hover-like windows of a normal flight -- the
+# takeoff climb -- are exactly what lands in that engineered tail. Those
+# borderline hits then decayed gps/imu far enough to trip COMMAND_RTH,
+# which response_engine never cancels, so one clean flight ended pinned in
+# a permanent false escalation.
+#
+# Replaying all 43 logged flights through the live detector measured:
+#   clean flight   916 anomalies / 88409 windows (1.04%), confidence <= 0.5444
+#   under attack     0 anomalies /  1200 windows (0.00%), all six scenarios
+# i.e. every observed ML hit to date is a false positive, and all of them
+# sit in a narrow band just past the threshold (confidence ~0.50-0.54,
+# decision_function ~0). A floor of 0.6 discards 100% of those while
+# discarding no true detections -- there are none to lose. It matches the
+# 0.6 already used by response_gps_rotate_key_confidence_min.
+#
+# This gates the *penalty*, not the detector: the ML result is still
+# computed, published on /security/trust_scores, and logged. If the model
+# is retrained on data that covers dynamic flight (and so scores real
+# attacks with genuine confidence), it resumes contributing with no code
+# change -- raise or lower this floor to match the retrained model.
+ml_confidence_min: 0.6
+
+# --- Phase 6: response engine ---
+# Once a response level is reached, it cannot be reported as lower again
+# until this many seconds after the last unhealthy update (any flag, any
+# non-NONE natural response, or an active sticky action). Governs the
+# reported response_level's stickiness; COMMAND_HOVER has its own faster
+# override (response_hover_cancel_consecutive_updates, below) for whether
+# it stays in the *actions* list specifically -- see response_engine.py's
+# module docstring for how the two interact.
+incident_window_s: 30.0
+
+# COMMAND_HOVER is cancelled (dropped from decision.actions) once
+# overall_trust exceeds this for response_hover_cancel_consecutive_updates
+# updates in a row. RTH and LAND have no such override -- never cancelled.
+response_hover_cancel_trust_min: 0.6
+response_hover_cancel_consecutive_updates: 5
+
+# ML confidence threshold for the GPS UNTRUSTED + high-confidence -> also
+# rotate the encryption key rule, and for the overall-trust==0.0 -> LAND
+# (vs. falling back to RTH) rule.
+response_gps_rotate_key_confidence_min: 0.6
+response_land_confidence_min: 0.8
+
+# Overall-trust thresholds driving ENTER_DEGRADED_MODE / COMMAND_HOVER /
+# COMMAND_RTH escalation (COMMAND_LAND is gated additionally by
+# response_land_confidence_min above, checked before the RTH threshold).
+response_degraded_max: 0.7
+response_hover_max: 0.5
+response_rth_max: 0.3
